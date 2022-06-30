@@ -58,7 +58,7 @@ public class getToken {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity<String> entity = new HttpEntity<String>("", headers);
             ResponseEntity<RefreshTokenDto> resultRefreshToken = restTemplate.restTemplate().exchange(url, HttpMethod.POST, entity, RefreshTokenDto.class);
-            if(resultRefreshToken.getStatusCode() == HttpStatus.OK){
+            if(resultRefreshToken.getStatusCodeValue() == 200){
                 if(resultRefreshToken.getBody().getAccessToken() != null && !resultRefreshToken.getBody().getAccessToken().isEmpty() && resultRefreshToken.getBody().getRefreshToken() != null && !resultRefreshToken.getBody().getRefreshToken().isEmpty()){
                     int updateAccessToken = getTokenService.updateAccessToken(resultRefreshToken.getBody().getAccessToken());
                     int updateRefreshToken = getTokenService.updateRefreshToken(resultRefreshToken.getBody().getRefreshToken());
@@ -85,7 +85,7 @@ public class getToken {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity<String> entity = new HttpEntity<String>("", headers);
             ResponseEntity<RefreshTokenDto> resultResetToken = restTemplate.restTemplate().exchange(url, HttpMethod.POST, entity, RefreshTokenDto.class);
-            if(resultResetToken.getStatusCode() == HttpStatus.OK){
+            if(resultResetToken.getStatusCodeValue() == 200){
                 if(resultResetToken.getBody().getAccessToken() != null && !resultResetToken.getBody().getAccessToken().isEmpty() && resultResetToken.getBody().getTokenType() != null && !resultResetToken.getBody().getTokenType().isEmpty() && resultResetToken.getBody().getExpiresIn() != null && !resultResetToken.getBody().getExpiresIn().isEmpty()) {
                     int updateAccessToken = getTokenService.updateAccessToken(resultResetToken.getBody().getAccessToken());
                     int updateRefreshToken = getTokenService.updateRefreshToken(resultResetToken.getBody().getRefreshToken());
