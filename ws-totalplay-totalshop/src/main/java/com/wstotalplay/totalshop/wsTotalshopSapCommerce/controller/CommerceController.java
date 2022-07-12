@@ -1,10 +1,10 @@
 package com.wstotalplay.totalshop.wsTotalshopSapCommerce.controller;
 
+import com.wstotalplay.totalshop.wsTotalshopBrm.vo.ResultOperation;
 import com.wstotalplay.totalshop.wsTotalshopSapCommerce.service.getProductByCategory;
 import com.wstotalplay.totalshop.wsTotalshopSapCommerce.service.getToken;
 import com.wstotalplay.totalshop.wsTotalshopSapCommerce.vo.Request;
 import com.wstotalplay.totalshop.wsTotalshopSapCommerce.vo.getProductByCategory.RequestProductByCategory;
-import com.wstotalplay.totalshop.wsTotalshopSapCommerce.vo.getProductByCategory.ResponseProductByCategory;
 import com.wstotalplay.totalshop.wsTotalshopSapCommerce.vo.getToken.ResponseGetToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,15 @@ public class CommerceController {
     }
 
     @PostMapping(value = "/Commerce/getBannerByCategory")
-    public ResponseEntity<ResponseProductByCategory> getBannerByCategory(@RequestBody RequestProductByCategory request){
-        return ResponseEntity.ok(productByCategory.productsByCategory(request.getIdCategory(),request.getPage(),request.getPageSize()));
+    public ResponseEntity<?> getBannerByCategory(@RequestBody RequestProductByCategory request){
+        var result = productByCategory.productsByCategory(request.getIdCategory(),request.getPage(),request.getPageSize());
+        if(result.getResultOperation().getResult() == "100"){
+            if(result.getResultOperation().getResultDescription().equals("Servicio consumido correctamente, No hay productos para mostrar")){
+                return ResponseEntity.ok(new ResultOperation("100","Servicio consumido correctamente, No hay productos para mostrar"));
+            }
+            return ResponseEntity.ok(result);
+        }else{
+            return ResponseEntity.ok(new ResultOperation(result.getResultOperation().getResult(),result.getResultOperation().getResultDescription()));
+        }
     }
 }

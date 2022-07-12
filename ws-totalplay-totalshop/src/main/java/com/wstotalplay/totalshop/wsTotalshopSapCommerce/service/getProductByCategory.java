@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +52,10 @@ public class getProductByCategory {
             }
             if(banner.getId_commerce().length() >= 4){
                 productDetail = getProductDetail(banner.getId_commerce(),tokenImpl.getToken().getAccessToken());
+                if(productDetail == null){
+                    responseProductByCategory.setResultOperation(new ResultOperation("168","Por el momento no es posible realizar esta operación. ¡Inténtalo más tarde"));
+                    return responseProductByCategory;
+                }
             }else{
                 category = true;
             }
@@ -126,7 +129,9 @@ public class getProductByCategory {
                 responseProductByCategory.setResultOperation(new ResultOperation("100","Servicio consumido correctamente, No hay productos para mostrar"));
             }
         }catch (Exception e){
-            System.out.println("Error: "+e.getMessage());
+            System.out.println(e.getMessage());
+            System.out.println("Error General");
+            responseProductByCategory.setResultOperation(new ResultOperation("101","Por el momento no es posible realizar esta operación. ¡Inténtalo más tarde!"));
         }
         return responseProductByCategory;
     }
@@ -138,6 +143,7 @@ public class getProductByCategory {
             banner = BannerByCategoryInterface.getBannerByCategory(idCategory);
         }catch (Exception e){
             System.out.println(e.getMessage());
+            System.out.println("Error al consultar el banner");
         }
         return banner;
     }
@@ -148,6 +154,7 @@ public class getProductByCategory {
             color = colorInterface.getColor(idText);
         }catch (Exception e){
             System.out.println(e.getMessage());
+            System.out.println("Error al obtener el color");
         }
         return color;
     }
@@ -167,6 +174,7 @@ public class getProductByCategory {
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
+            System.out.println("Error al consultar en getProductDetail hacia E-Commerce");
         }
         return productDetail;
     }
@@ -187,6 +195,7 @@ public class getProductByCategory {
             }
         }catch (Exception e ){
             System.out.println(e.getMessage());
+            System.out.println("Error al consultar en getProductsByCategory hacia E-Commerce");
         }
         return productsByCategory;
     }
@@ -201,6 +210,7 @@ public class getProductByCategory {
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
+            System.out.println("Error al dar formato en la fecha");
         }
         return dateFormat;
     }
