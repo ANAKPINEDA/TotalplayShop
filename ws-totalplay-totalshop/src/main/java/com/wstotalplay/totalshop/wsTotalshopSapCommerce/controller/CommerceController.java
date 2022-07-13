@@ -36,8 +36,8 @@ public class CommerceController {
         return ResponseEntity.ok(getTokenImpl.resetToken());
     }
 
-    @PostMapping(value = "/Commerce/getBannerByCategory")
-    public ResponseEntity<?> getBannerByCategory(@RequestBody RequestProductByCategory request){
+    @PostMapping(value = "/Commerce/getProductByCategory")
+    public ResponseEntity<?> getProductByCategory(@RequestBody RequestProductByCategory request){
         var result = productByCategory.productsByCategory(request.getIdCategory(),request.getPage(),request.getPageSize());
         if(result.getResultOperation().getResult() == "100"){
             if(result.getResultOperation().getResultDescription().equals("Servicio consumido correctamente, No hay productos para mostrar")){

@@ -35,7 +35,10 @@ public class getToken {
             MktConfigurationServiceEntity token = getTokenService.getToken();
             MktConfigurationServiceEntity refreshToken = getTokenService.getRefreshToken();
             if(token.getValue() != null && !token.getValue().isEmpty()){
-                resultResponseGetToken = new ResponseGetToken(token.getValue(),"bearer","0","extended");
+                resultResponseGetToken.setAccessToken(token.getValue());
+                resultResponseGetToken.setTokenType("bearer");
+                resultResponseGetToken.setExpiresIn("0");
+                resultResponseGetToken.setScope("extended");
                 resultResponseGetToken.setResultOperation(new ResultOperation("100","Servicio consumido correctamente"));
             }else if(refreshToken.getValue() != null && !refreshToken.getValue().isEmpty()){
                 return getRefreshToken(refreshToken.getValue());
@@ -43,6 +46,8 @@ public class getToken {
                 return resetToken();
             }
         }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println("Error general en getToken");
             return resetToken();
         }
 
@@ -63,7 +68,10 @@ public class getToken {
                     int updateAccessToken = getTokenService.updateAccessToken(resultRefreshToken.getBody().getAccessToken());
                     int updateRefreshToken = getTokenService.updateRefreshToken(resultRefreshToken.getBody().getRefreshToken());
                     if(updateAccessToken>0 && updateRefreshToken>0){
-                       resultResponseGetToken = new ResponseGetToken(resultRefreshToken.getBody().getAccessToken(),"bearer","0","extended");
+                        resultResponseGetToken.setAccessToken(resultRefreshToken.getBody().getAccessToken());
+                        resultResponseGetToken.setTokenType("bearer");
+                        resultResponseGetToken.setExpiresIn("0");
+                        resultResponseGetToken.setScope("extended");
                        resultResponseGetToken.setResultOperation(new ResultOperation("100","Servicio consumido correctamente"));
                     }
                 }else{
@@ -71,6 +79,8 @@ public class getToken {
                 }
             }
         }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println("Error general fallo en getRefreshToken");
             resetToken();
         }
         return resultResponseGetToken;
@@ -90,15 +100,23 @@ public class getToken {
                     int updateAccessToken = getTokenService.updateAccessToken(resultResetToken.getBody().getAccessToken());
                     int updateRefreshToken = getTokenService.updateRefreshToken(resultResetToken.getBody().getRefreshToken());
                     if(updateAccessToken>0 && updateRefreshToken>0){
-                        resultResponseGetToken = new ResponseGetToken(resultResetToken.getBody().getAccessToken(),resultResetToken.getBody().getTokenType(),resultResetToken.getBody().getScope(),resultResetToken.getBody().getExpiresIn());
+                        resultResponseGetToken.setAccessToken(resultResetToken.getBody().getAccessToken());
+                        resultResponseGetToken.setTokenType(resultResetToken.getBody().getTokenType());
+                        resultResponseGetToken.setScope(resultResetToken.getBody().getScope());
+                        resultResponseGetToken.setExpiresIn(resultResetToken.getBody().getExpiresIn());
                         resultResponseGetToken.setResultOperation(new ResultOperation("100","Servicio consumido correctamente"));
                     }
                 }else{
-                    resultResponseGetToken = new ResponseGetToken("","","","");
+                    resultResponseGetToken.setAccessToken("");
+                    resultResponseGetToken.setTokenType("");
+                    resultResponseGetToken.setScope("");
+                    resultResponseGetToken.setExpiresIn("");
                     resultResponseGetToken.setResultOperation(new ResultOperation("100","Error: No se obtuvo el Token, favor de revisar con el administrador"));
                 }
             }
         }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println("Error general en resetToken");
         }
         return resultResponseGetToken;
     }
